@@ -1,0 +1,25 @@
+- name: Setup k3s master and nodes on Amazon Linux 2
+  hosts: k8s_ec2_First_Instance
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  tasks:
+
+    - name: install all updates from yum
+      yum: name=* state=latest
+
+    - name: Download k3s install script
+      get_url:
+        url: https://raw.githubusercontent.com/rancher/k3s/master/install.sh
+        dest: /tmp/install.sh
+        mode: '0700'
+
+    - name: install k3s on the master
+      when: inventory_hostname in groups['k8s_ec2_First_Instance']
+      command: "/tmp/install.sh"
+      
+    - name: chown k3s file so kubectl works from the regular user
+      when: inventory_hostname in groups['k8s_ec2_First_Instance']
+      file:
+        path: /etc/rancher/k3s/k3s.yaml
+        owner: "{{ ansible_user }}"
