@@ -131,6 +131,20 @@
         port: 8080
         timeout: 60
 
+    - name: Change permissions of /etc/sudoers.d/90-cloud-init-users to 660
+      file:
+        path: /etc/sudoers.d/90-cloud-init-users
+        mode: "0660"
+    - name: Add Jenkins to sudoers
+      lineinfile:
+        path: /etc/sudoers.d/90-cloud-init-users
+        line: "jenkins ALL=(ALL) NOPASSWD: ALL"
+        state: present
+    - name: Change permissions of /etc/sudoers.d/90-cloud-init-users to 440
+      file:
+        path: /etc/sudoers.d/90-cloud-init-users
+        mode: "0440"
+
     - name: Print Jenkins initial admin password
       command: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkins_admin_password
