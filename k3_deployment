@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: second-k8s-deployment
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: ezyempire-app
+  template:
+    metadata:
+      labels:
+        app: ezyempire-app
+    spec:
+      containers:
+        - name: ezyempire-app
+          image: ezy2285/web8-image:latest
+          ports:
+            - containerPort: 80 # Corrected typo in "containerPort"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: second-k8s-service
+spec:
+  type: NodePort
+  selector:
+    app: ezyempire-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080
+~
+~
+~
+~
+~
+~
+~
